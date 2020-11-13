@@ -1,7 +1,7 @@
 package pl.msitko.dhallj.generic
 
 import org.dhallj.codec.Encoder
-import org.dhallj.codec.syntax.DhallCodecAnyOps
+import org.dhallj.codec.syntax._
 import GenericEncoder._
 import pl.msitko.dhallj.generic.example.akka.{Akka, Http, OnOrOff, OnOrOff2, Preview, Server}
 import pl.msitko.dhallj.generic.example.{AppConfig, Error1, Error2, Errors}
