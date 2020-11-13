@@ -1,0 +1,9 @@
+target
+.idea
+.DS_Store
+*.bloop
+*.metals
+
+.history
+TODO.md
+.bsp
