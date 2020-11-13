@@ -1,3 +1,4 @@
+import com.softwaremill.Publish.ossPublishSettings
 import com.softwaremill.SbtSoftwareMillCommon.autoImport.commonSmlBuildSettings
 import org.scalafmt.sbt.ScalafmtPlugin.autoImport.scalafmtOnCompile
 import sbt.Keys.{name, organization, scalaVersion, testFrameworks, version}
@@ -14,7 +15,8 @@ object Common {
       scalafmtOnCompile := true,
 
       commonSmlBuildSettings,
-      testFrameworks += new TestFramework("munit.Framework")
+      testFrameworks += new TestFramework("munit.Framework"),
+      ossPublishSettings
     )
   }
 }
