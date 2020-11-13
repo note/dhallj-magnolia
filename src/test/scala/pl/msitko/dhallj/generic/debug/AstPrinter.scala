@@ -1,4 +1,4 @@
-package org.dhallj.generic.debug
+package pl.msitko.dhallj.generic.debug
 
 import org.dhallj.syntax._
 

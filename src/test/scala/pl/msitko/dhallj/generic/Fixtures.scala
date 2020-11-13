@@ -1,6 +1,6 @@
-package org.dhallj.generic
+package pl.msitko.dhallj.generic
 
-import org.dhallj.generic.example.{ApiConfig, AppConfig, DbConfig, EndpointConfig}
+import pl.msitko.dhallj.generic.example.{ApiConfig, AppConfig, DbConfig, EndpointConfig}
 
 trait Fixtures {
 

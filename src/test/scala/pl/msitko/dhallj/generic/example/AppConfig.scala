@@ -1,4 +1,4 @@
-package org.dhallj.generic.example
+package pl.msitko.dhallj.generic.example
 
 final case class DbConfig(
     host: String,

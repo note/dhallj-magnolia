@@ -1,4 +1,4 @@
-package org.dhallj.generic
+package pl.msitko.dhallj.generic
 
 import magnolia.{CaseClass, Magnolia, SealedTrait}
 import org.dhallj.codec.Encoder

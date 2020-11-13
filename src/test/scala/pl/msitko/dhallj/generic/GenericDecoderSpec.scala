@@ -1,11 +1,12 @@
-package org.dhallj.generic
+package pl.msitko.dhallj.generic
 
 import org.dhallj.codec.syntax._
-import org.dhallj.generic.example._
 import org.dhallj.syntax._
 import GenericDecoder._
 import org.dhallj.codec.Decoder
-import org.dhallj.generic.example.akka.{Akka, Http, OnOrOff, OnOrOff2, Preview, Server}
+import pl.msitko.dhallj.generic.example.akka.{Akka, Http, OnOrOff, OnOrOff2, Preview, Server}
+import pl.msitko.dhallj.generic.example.akka.OnOrOff.Off
+import pl.msitko.dhallj.generic.example.{AppConfig, Error1, Error2, Errors}
 
 class GenericDecoderSpec extends munit.FunSuite with Fixtures {
   test("Load nested case classes") {
@@ -57,7 +58,7 @@ class GenericDecoderSpec extends munit.FunSuite with Fixtures {
         |in { http = { server = { preview = { enableHttp2 = OnOrOff.Off {=} } } } }
         |""".stripMargin.decode[Akka]
 
-    assertEquals(decoded, Akka(Http(Server(Preview(OnOrOff.Off)))))
+    assertEquals(decoded, Akka(Http(Server(Preview(Off)))))
   }
 
   test("Load union without parameter list as case object") {

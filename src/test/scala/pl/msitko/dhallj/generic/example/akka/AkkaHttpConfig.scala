@@ -1,4 +1,4 @@
-package org.dhallj.generic.example.akka
+package pl.msitko.dhallj.generic.example.akka
 
 final case class Akka(
     http: Http
