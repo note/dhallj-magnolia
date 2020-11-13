@@ -20,7 +20,8 @@ import org.dhallj.codec.syntax._
 import pl.msitko.dhallj.generic.GenericEncoder._
 
 val input = Foo(12, "abc", Bar2("abcd"))
-val out = input.asExpr.toString
+input.asExpr.toString
+// """{a = 12, b = "abc", bar = (<Bar1 : {a : Natural} | Bar2 : {b : Text}>.Bar2) {b = "abcd"}}"""
 ```
 
 ### Derive Decoder
@@ -35,4 +36,5 @@ for {
   parsed  <- input.parseExpr
   decoded <- parsed.normalize().as[Foo]
 } yield decoded
+// Right(Foo(12,abc,Bar2(abcd)))
 ```
