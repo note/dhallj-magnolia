@@ -6,7 +6,7 @@ This library provides generic derivation of [dhallj](https://github.com/travisbr
 
 Consider following ADT:
 
-```
+```scala
 sealed trait Bar
 final case class Bar1(a: Int) extends Bar
 final case class Bar2(b: String) extends Bar
@@ -15,7 +15,7 @@ final case class Foo(a: Int, b: String, bar: Bar)
 
 ### Derive Encoder
 
-```
+```scala
 import org.dhallj.codec.syntax._
 import pl.msitko.dhallj.generic.GenericEncoder._
 
@@ -25,7 +25,7 @@ val out = input.asExpr.toString
 
 ### Derive Decoder
 
-```
+```scala
 import org.dhallj.syntax._
 import pl.msitko.dhallj.generic.GenericDecoder._
 
