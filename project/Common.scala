@@ -8,13 +8,13 @@ import xerial.sbt.Sonatype.autoImport.{sonatypeProfileName, sonatypeProjectHosti
 import sbt.Keys._
 import sbt._
 import sbtrelease.ReleasePlugin.autoImport.releasePublishArtifactsAction
+import xerial.sbt.Sonatype.GitHubHosting
 
 object Common {
   implicit class ProjectFrom(project: Project) {
-    def commonSettings(nameArg: String, versionArg: String): Project = project.settings(
+    def commonSettings(nameArg: String): Project = project.settings(
       name := nameArg,
       organization := "pl.msitko",
-      version := versionArg,
 
       scalaVersion := "2.13.3",
       scalafmtOnCompile := true,
@@ -24,6 +24,11 @@ object Common {
       testFrameworks += new TestFramework("munit.Framework"),
       ossPublishSettings ++ Seq(
         sonatypeProfileName := "pl.msitko",
+        organizationHomepage := Some(url("https://github.com/note")),
+        homepage := Some(url("http://github.com/note/dhallj-magnolia")),
+        sonatypeProjectHosting := Some(
+          GitHubHosting("note", name.value, "pierwszy1@gmail.com")
+        ),
         licenses := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
         developers := List(
           Developer(
