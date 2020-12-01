@@ -16,7 +16,7 @@ object Common {
       name := nameArg,
       organization := "pl.msitko",
 
-      scalaVersion := "2.13.3",
+      scalaVersion := "2.13.4",
       scalafmtOnCompile := true,
       releasePublishArtifactsAction := PgpKeys.publishSigned.value,
 
@@ -25,7 +25,7 @@ object Common {
       ossPublishSettings ++ Seq(
         sonatypeProfileName := "pl.msitko",
         organizationHomepage := Some(url("https://github.com/note")),
-        homepage := Some(url("http://github.com/note/dhallj-magnolia")),
+        homepage := Some(url("https://github.com/note/dhallj-magnolia")),
         sonatypeProjectHosting := Some(
           GitHubHosting("note", name.value, "pierwszy1@gmail.com")
         ),

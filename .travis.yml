@@ -4,7 +4,6 @@ jdk:
 dist: bionic
 before_install:
 - bash scripts/decrypt_files_if_not_pr.sh
-- tar xvf secrets.tar
 before_cache:
 - du -h -d 1 $HOME/.ivy2/
 - du -h -d 2 $HOME/.sbt/
