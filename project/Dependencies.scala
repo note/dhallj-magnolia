@@ -18,6 +18,6 @@ object Dependencies {
 
 	lazy val testDeps = Seq(
 		"org.scalameta" %% "munit" 					% Versions.Munit % Test,
-		"org.dhallj" 		%% "dhall-javagen" 	% Versions.Dhall
+		"org.dhallj" 		%% "dhall-javagen" 	% Versions.Dhall % Test
 	)
 }

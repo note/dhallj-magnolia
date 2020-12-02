@@ -6,7 +6,7 @@ import GenericDecoder._
 import org.dhallj.codec.Decoder
 import pl.msitko.dhallj.generic.example.akka.{Akka, Http, OnOrOff, OnOrOff2, Preview, Server}
 import pl.msitko.dhallj.generic.example.akka.OnOrOff.Off
-import pl.msitko.dhallj.generic.example.{AppConfig, Error1, Error2, Errors}
+import pl.msitko.dhallj.generic.example.{AppConfig, Error1, Error2, Errors, StatusCode}
 
 class GenericDecoderSpec extends munit.FunSuite with Fixtures {
   test("Load nested case classes") {
@@ -39,6 +39,12 @@ class GenericDecoderSpec extends munit.FunSuite with Fixtures {
         |""".stripMargin.decode[AppConfig]
 
     assertEquals(decoded, someAppConfig)
+  }
+
+  test("Load value classes") {
+    val decoded = "{ code = 404 }".decode[StatusCode]
+
+    assertEquals(decoded, StatusCode(404))
   }
 
   test("Load sealed trait") {

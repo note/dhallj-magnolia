@@ -29,3 +29,5 @@ sealed trait Error
 final case class Error1(msg: String) extends Error
 
 final case class Error2(code: Int, code2: Long) extends Error
+
+final case class StatusCode(code: Int) extends AnyVal
