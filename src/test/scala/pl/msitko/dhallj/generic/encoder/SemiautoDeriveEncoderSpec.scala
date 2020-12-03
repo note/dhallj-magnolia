@@ -1,15 +1,49 @@
-package pl.msitko.dhallj.generic
+package pl.msitko.dhallj.generic.encoder
 
 import org.dhallj.codec.Encoder
 import org.dhallj.codec.syntax._
-import org.dhallj.codec.Encoder._
-import GenericEncoder._
+import org.dhallj.core.Expr
+import pl.msitko.dhallj.generic.Fixtures
+import pl.msitko.dhallj.generic.example.{
+  ApiConfig,
+  AppConfig,
+  DbConfig,
+  EndpointConfig,
+  Error,
+  Error1,
+  Error2,
+  Errors,
+  StatusCode
+}
 import pl.msitko.dhallj.generic.example.akka.{Akka, Http, OnOrOff, OnOrOff2, Preview, Server}
-import pl.msitko.dhallj.generic.example.{AppConfig, Error, Error1, Error2, Errors, StatusCode}
 
-class GenericEncoderSpec extends munit.FunSuite with Fixtures {
+class SemiautoDeriveEncoderSpec extends munit.FunSuite with Fixtures {
+  import semiauto._
+
+  implicit val appConfigEnc = {
+    implicit val endpointConfigEnc = deriveEncoder[EndpointConfig]
+    implicit val apiConfigEnc      = deriveEncoder[ApiConfig]
+    implicit val dbConfigEnc       = deriveEncoder[DbConfig]
+    deriveEncoder[AppConfig]
+  }
+  implicit val statusCodeEnc = deriveEncoder[StatusCode]
+  implicit val errorCodeEnc  = deriveEncoder[Error]
+
+  implicit val errorsCodeEnc = {
+    deriveEncoder[Errors]
+  }
+  implicit val onOrOffEnc = deriveEncoder[OnOrOff]
+
+  implicit val akkaEnc = {
+    implicit val previewEnc = deriveEncoder[Preview]
+    implicit val serverEnc  = deriveEncoder[Server]
+    implicit val httpEnc    = deriveEncoder[Http]
+    deriveEncoder[Akka]
+  }
+  implicit val offEnc = deriveEncoder[OnOrOff2.Off]
+
   test("Encode case class") {
-    val res = someAppConfig.asExpr.toString
+    val res = encode(someAppConfig)
 
     assertEquals(
       res,
@@ -17,7 +51,7 @@ class GenericEncoderSpec extends munit.FunSuite with Fixtures {
   }
 
   test("Generate dhall type for case class") {
-    val typeExpr = Encoder[AppConfig].dhallType(None, None)
+    val typeExpr: Expr = dhallType[AppConfig]
 
     assertEquals(
       typeExpr.toString,
@@ -25,7 +59,7 @@ class GenericEncoderSpec extends munit.FunSuite with Fixtures {
   }
 
   test("Encode value class") {
-    val res = StatusCode(404).asExpr.toString
+    val res = encode(StatusCode(404))
 
     assertEquals(
       res,
@@ -34,7 +68,7 @@ class GenericEncoderSpec extends munit.FunSuite with Fixtures {
   }
 
   test("Encode sealed trait") {
-    val res = Errors(List(Error1("abc"), Error2(code = 123, code2 = 456))).asExpr.toString
+    val res = encode(Errors(List(Error1("abc"), Error2(code = 123, code2 = 456))))
 
     assertEquals(
       res,
@@ -42,7 +76,7 @@ class GenericEncoderSpec extends munit.FunSuite with Fixtures {
   }
 
   test("Generate dhall type for sealed traits") {
-    val typeExpr = Encoder[Error].dhallType(None, None)
+    val typeExpr = dhallType[Error]
 
     assertEquals(
       typeExpr.toString,
@@ -50,18 +84,18 @@ class GenericEncoderSpec extends munit.FunSuite with Fixtures {
     )
   }
 
-  test("Work if the top level type has custom encoder") {
-    // BTW it wouldn't work if we don't `import org.dhallj.codec.Encoder._`
-    val typeExpr = Encoder[List[Error]].dhallType(None, None)
-
-    assertEquals(
-      typeExpr.toString,
-      "List <Error1 : {msg : Text} | Error2 : {code : Natural, code2 : Natural}>"
-    )
-  }
+//  test("Work if the top level type has custom encoder") {
+//    // BTW it wouldn't work if we don't `import org.dhallj.codec.Encoder._`
+//    val typeExpr = dhallType[List[Error]]
+//
+//    assertEquals(
+//      typeExpr.toString,
+//      "List <Error1 : {msg : Text} | Error2 : {code : Natural, code2 : Natural}>"
+//    )
+//  }
 
   test("Encode case object") {
-    val res = (OnOrOff.Off: OnOrOff).asExpr.toString
+    val res = encode(OnOrOff.Off: OnOrOff)
 
     // Another encoding would be preferred: <Off | On>.Off
     // However, it cannot be achieved with magnolia and current Encoder API
@@ -73,14 +107,21 @@ class GenericEncoderSpec extends munit.FunSuite with Fixtures {
   }
 
   test("Encode case object within deeply nested hierarchy") {
-    val res = Akka(Http(Server(Preview(OnOrOff.Off)))).asExpr.toString
+    val res = encode(Akka(Http(Server(Preview(OnOrOff.Off)))))
 
     assertEquals(res, """{http = {server = {preview = {enableHttp2 = (<Off : {} | On : {}>.Off) {=}}}}}""")
   }
 
   test("Encode parameterless case class") {
-    val res = OnOrOff2.Off().asExpr.toString
+    val res = encode(OnOrOff2.Off())
 
     assertEquals(res, "{=}")
   }
+
+  def encode[T: Encoder](in: T): String =
+    in.asExpr.toString
+
+  def dhallType[T: Encoder]: Expr =
+    Encoder[T].dhallType(None, None)
+
 }

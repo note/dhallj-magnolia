@@ -1,14 +1,16 @@
-package pl.msitko.dhallj.generic
+package pl.msitko.dhallj.generic.decoder
 
+import org.dhallj.codec.Decoder
 import org.dhallj.codec.syntax._
 import org.dhallj.syntax._
-import GenericDecoder._
-import org.dhallj.codec.Decoder
-import pl.msitko.dhallj.generic.example.akka.{Akka, Http, OnOrOff, OnOrOff2, Preview, Server}
+import pl.msitko.dhallj.generic.Fixtures
 import pl.msitko.dhallj.generic.example.akka.OnOrOff.Off
-import pl.msitko.dhallj.generic.example.{AppConfig, Error1, Error2, Errors, StatusCode}
+import pl.msitko.dhallj.generic.example.akka._
+import pl.msitko.dhallj.generic.example._
 
-class GenericDecoderSpec extends munit.FunSuite with Fixtures {
+class AutoDeriveDecoderSpec extends munit.FunSuite with Fixtures {
+  import auto._
+
   test("Load nested case classes") {
     val decoded =
       """

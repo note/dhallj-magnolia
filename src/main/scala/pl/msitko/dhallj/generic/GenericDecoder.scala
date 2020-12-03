@@ -1,24 +1,23 @@
 package pl.msitko.dhallj.generic
 
-import magnolia.{CaseClass, Magnolia, SealedTrait}
 import cats.Traverse
 import cats.implicits.catsSyntaxEitherId
+import cats.instances.either._
+import cats.instances.list._
+import magnolia.{CaseClass, SealedTrait}
 import org.dhallj.ast._
+import org.dhallj.codec.Decoder.Result
 import org.dhallj.codec.{Decoder, DecodingFailure}
 import org.dhallj.core.Expr
-import org.dhallj.codec.Decoder.Result
-import cats.instances.list._
-import cats.instances.either._
 
 final case class MissingRecordField(override val target: String, missingFieldName: String, override val value: Expr)
     extends DecodingFailure(target, value) {
   override def toString: String = s"Missing record field '$missingFieldName' when decoding $target"
 }
 
-object GenericDecoder {
-  type Typeclass[T] = Decoder[T]
+private[generic] object GenericDecoder {
 
-  def combine[T](caseClass: CaseClass[Decoder, T]): Decoder[T] = new Decoder[T] {
+  private[generic] def combine[T](caseClass: CaseClass[Decoder, T]): Decoder[T] = new Decoder[T] {
 
     private def decodeAs(expr: Expr, recordMap: Map[String, Expr]) =
       Traverse[List]
@@ -52,7 +51,7 @@ object GenericDecoder {
     override def isExactType(typeExpr: Expr): Boolean = ???
   }
 
-  def dispatch[T](sealedTrait: SealedTrait[Decoder, T]): Decoder[T] = new Decoder[T] {
+  private[generic] def dispatch[T](sealedTrait: SealedTrait[Decoder, T]): Decoder[T] = new Decoder[T] {
 
     private def decodeAs(expr: Expr, subtypeName: String) =
       sealedTrait.subtypes.find(_.typeName.short == subtypeName) match {
@@ -75,6 +74,4 @@ object GenericDecoder {
 
     override def isExactType(typeExpr: Expr): Boolean = ???
   }
-
-  implicit def gen[T]: Typeclass[T] = macro Magnolia.gen[T]
 }
