@@ -75,6 +75,43 @@ class SemiautoDeriveDecoderSpec extends munit.FunSuite with Fixtures {
     assertEquals(decoded, someAppConfig)
   }
 
+  test("Load List A") {
+    val decoded =
+      """
+        |[ { code = 200 }, { code = 201 } ]
+        |""".stripMargin.decode[List[StatusCode]]
+
+    assertEquals(decoded, List(StatusCode(200), StatusCode(201)))
+  }
+
+  // Has to stay ignored until https://github.com/travisbrown/dhallj/pull/211 is released
+  test("Load empty List A".ignore) {
+    val decoded =
+      """
+        |[] : List { code : Natural }
+        |""".stripMargin.decode[List[StatusCode]]
+
+    assertEquals(decoded, List.empty[StatusCode])
+  }
+
+  test("Load empty Vector A") {
+    val decoded =
+      """
+        |[] : List { code : Natural }
+        |""".stripMargin.decode[Vector[StatusCode]]
+
+    assertEquals(decoded, Vector.empty[StatusCode])
+  }
+
+  test("Do not load empty List of a different type") {
+    val decoded =
+      """
+        |[] : List { nonkey : Text }
+        |""".stripMargin.parseExpr.getOr("parsing failed").as[List[StatusCode]]
+
+    assert(decoded.isLeft)
+  }
+
   test("Load value classes") {
     val decoded = "{ code = 404 }".decode[StatusCode]
 

@@ -46,9 +46,16 @@ private[generic] object GenericDecoder {
         Left(new DecodingFailure(caseClass.typeName.full, other))
     }
 
-    override def isValidType(typeExpr: Expr): Boolean = ???
+    override def isValidType(typeExpr: Expr): Boolean = typeExpr match {
+      case RecordType(recordMap) =>
+        caseClass.parameters.toList.forall { param =>
+          recordMap.get(param.label).exists(param.typeclass.isValidType)
+        }
+      case _ =>
+        false
+    }
 
-    override def isExactType(typeExpr: Expr): Boolean = ???
+    override def isExactType(typeExpr: Expr): Boolean = false
   }
 
   private[generic] def dispatch[T](sealedTrait: SealedTrait[Decoder, T]): Decoder[T] = new Decoder[T] {
@@ -70,8 +77,8 @@ private[generic] object GenericDecoder {
         new DecodingFailure("Is not a union", expr).asLeft
     }
 
-    override def isValidType(typeExpr: Expr): Boolean = ???
+    override def isValidType(typeExpr: Expr): Boolean = true
 
-    override def isExactType(typeExpr: Expr): Boolean = ???
+    override def isExactType(typeExpr: Expr): Boolean = false
   }
 }
