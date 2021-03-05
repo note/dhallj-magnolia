@@ -1,6 +1,6 @@
 package pl.msitko.dhallj.generic.decoder
 
-import org.dhallj.codec.Decoder
+import org.dhallj.codec.{Decoder, DownField}
 import org.dhallj.codec.syntax._
 import org.dhallj.syntax._
 import pl.msitko.dhallj.generic.Fixtures
@@ -109,23 +109,26 @@ class AutoDeriveDecoderSpec extends munit.FunSuite with Fixtures {
     assertEquals(decoded, OnOrOff2.Off())
   }
 
-  test("Decoding error should be comprehensible for deeply nested case classes".ignore) {
-    val input =
-      """
-        |let OnOrOff = < On: {} | Off: {} >
-        |in { http = { server = { preview = { enableHttp = OnOrOff.Off } } } }
-        |""".stripMargin
+  test("Decoding error should be comprehensible for deeply nested case classes") {
+    val input = """{ a1.b1 = { c1 = "someString", c2 = "hey there" } }"""
 
     val parsed = input.parseExpr.getOr("Parsing failed").normalize()
 
-    val decoded = parsed.as[Akka]
+    val Left(decodingFailure) = parsed.as[A]
 
-    val expectedMsg =
-      "Missing field http.server.preview.[enableHttp2] when decoding org.dhallj.generic.example.akka.Preview"
+    assertEquals(decodingFailure.message, "Error decoding Int")
+    assertEquals(decodingFailure.history, List(DownField("c2"), DownField("b1"), DownField("a1")))
+  }
 
-    val errorMsg = decoded.left.map(_.getMessage)
+  test("Failed cursor should have proper history") {
+    val input = """{ a1.b1 = { c1 = "someString" } }"""
 
-    assert(errorMsg.left.map(_.contains(expectedMsg)).left.getOrElse(false))
+    val parsed = input.parseExpr.getOr("Parsing failed").normalize()
+
+    val Left(decodingFailure) = parsed.as[A]
+
+    assertEquals(decodingFailure.message, "Attempt to decode value on failed cursor")
+    assertEquals(decodingFailure.history, List(DownField("c2"), DownField("b1"), DownField("a1")))
   }
 
   implicit class DecodeString(s: String) {
@@ -138,3 +141,7 @@ class AutoDeriveDecoderSpec extends munit.FunSuite with Fixtures {
     def getOr(clue: String): R = v.fold(l => fail(s"Unexpected Left when $clue: $l"), r => r)
   }
 }
+
+final case class A(a1: B)
+final case class B(b1: C)
+final case class C(c1: String, c2: Int)
