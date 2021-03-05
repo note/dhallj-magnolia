@@ -16,7 +16,7 @@ object Common {
       name := nameArg,
       organization := "pl.msitko",
 
-      scalaVersion := "2.13.4",
+      scalaVersion := "2.13.5",
       scalafmtOnCompile := true,
       releasePublishArtifactsAction := PgpKeys.publishSigned.value,
 
