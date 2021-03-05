@@ -15,5 +15,4 @@ trait Fixtures {
         path = Some("/")
       )),
   )
-
 }

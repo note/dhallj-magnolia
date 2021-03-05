@@ -123,5 +123,4 @@ class SemiautoDeriveEncoderSpec extends munit.FunSuite with Fixtures {
 
   def dhallType[T: Encoder]: Expr =
     Encoder[T].dhallType(None, None)
-
 }

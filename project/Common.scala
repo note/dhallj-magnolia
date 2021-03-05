@@ -11,15 +11,15 @@ import sbtrelease.ReleasePlugin.autoImport.releasePublishArtifactsAction
 import xerial.sbt.Sonatype.GitHubHosting
 
 object Common {
+
   implicit class ProjectFrom(project: Project) {
+
     def commonSettings(nameArg: String): Project = project.settings(
       name := nameArg,
       organization := "pl.msitko",
-
       scalaVersion := "2.13.4",
       scalafmtOnCompile := true,
       releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-
       commonSmlBuildSettings,
       testFrameworks += new TestFramework("munit.Framework"),
       ossPublishSettings ++ Seq(
