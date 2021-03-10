@@ -7,43 +7,40 @@ import cats.instances.list._
 import magnolia.{CaseClass, SealedTrait}
 import org.dhallj.ast._
 import org.dhallj.codec.Decoder.Result
-import org.dhallj.codec.{Decoder, DecodingFailure}
+import org.dhallj.codec.{ACursor, Decoder, DecodingFailure, DownField, HCursor}
 import org.dhallj.core.Expr
-
-final case class MissingRecordField(override val target: String, missingFieldName: String, override val value: Expr)
-    extends DecodingFailure(target, value) {
-  override def toString: String = s"Missing record field '$missingFieldName' when decoding $target"
-}
 
 private[generic] object GenericDecoder {
 
   private[generic] def combine[T](caseClass: CaseClass[Decoder, T]): Decoder[T] = new Decoder[T] {
 
-    private def decodeAs(expr: Expr, recordMap: Map[String, Expr]) =
+    private def decodeAs(c: HCursor): Either[DecodingFailure, T] =
       Traverse[List]
         .traverse(caseClass.parameters.toList) { param =>
-          recordMap.get(param.label) match {
-            case Some(expr) =>
-              param.typeclass.decode(expr)
-            case None =>
-              param.default match {
-                case Some(default) => Right(default)
-                case None =>
-                  Left(MissingRecordField(caseClass.typeName.full, param.label, expr))
-              }
+          if (c.downField(param.label).succeeded) {
+            param.typeclass.tryDecode(c.downField(param.label))
+          } else {
+            param.default match {
+              case Some(default) => default.asRight
+              case None =>
+                new DecodingFailure(
+                  "Attempt to decode value on failed cursor",
+                  Some(c.expr),
+                  DownField(param.label) :: c.history).asLeft
+            }
           }
         }
         .map(ps => caseClass.rawConstruct(ps))
 
-    override def decode(expr: Expr): Result[T] = expr match {
-      case RecordLiteral(recordMap) =>
-        decodeAs(expr, recordMap)
+    override def decode(c: HCursor): Result[T] = c.expr match {
+      case RecordLiteral(_) =>
+        decodeAs(c)
 
       case FieldAccess(UnionType(_), _) =>
-        decodeAs(expr, Map.empty)
+        decodeAs(c)
 
       case other =>
-        Left(new DecodingFailure(caseClass.typeName.full, other))
+        DecodingFailure.failedTarget(caseClass.typeName.full, other, c.history).asLeft
     }
 
     override def isValidType(typeExpr: Expr): Boolean = typeExpr match {
@@ -60,21 +57,29 @@ private[generic] object GenericDecoder {
 
   private[generic] def dispatch[T](sealedTrait: SealedTrait[Decoder, T]): Decoder[T] = new Decoder[T] {
 
-    private def decodeAs(expr: Expr, subtypeName: String) =
+    private def decodeAs(c: ACursor, subtypeName: String) =
       sealedTrait.subtypes.find(_.typeName.short == subtypeName) match {
         case Some(subtype) =>
-          subtype.typeclass.decode(expr)
+          subtype.typeclass.tryDecode(c)
         case None =>
-          new DecodingFailure(s"$subtypeName is not a known subtype of ${sealedTrait.typeName.full}", expr).asLeft
+          c.focus match {
+            case Some(expr) =>
+              DecodingFailure
+                .failedTarget(s"$subtypeName is not a known subtype of ${sealedTrait.typeName.full}", expr, c.history)
+                .asLeft
+            case None =>
+              new DecodingFailure("Attempt to decode value on failed cursor", None, c.history).asLeft
+          }
+
       }
 
-    override def decode(expr: Expr): Result[T] = expr match {
-      case Application(FieldAccess(UnionType(_), t), arg) =>
-        decodeAs(arg, t)
+    override def decode(c: HCursor): Result[T] = c.expr match {
+      case Application(FieldAccess(UnionType(_), t), _) =>
+        decodeAs(c.unionAlternative(t), t)
       case FieldAccess(UnionType(_), t) =>
-        decodeAs(expr, t)
+        decodeAs(c.unionAlternative(t), t)
       case _ =>
-        new DecodingFailure("Is not a union", expr).asLeft
+        DecodingFailure.failedTarget("Is not a union", c.expr, c.history).asLeft
     }
 
     override def isValidType(typeExpr: Expr): Boolean = true

@@ -13,7 +13,7 @@ object Dependencies {
 	)
 
 	def compileDeps(scalaVersion: String) = Seq(
-		"org.dhallj" %% "dhall-scala-codec" % Versions.Dhall
+		"org.dhallj" %% "dhall-scala-codec" % "0.8.1-local"
 	) ++ magnolia(scalaVersion)
 
 	lazy val testDeps = Seq(
