@@ -109,6 +109,19 @@ class AutoDeriveDecoderSpec extends munit.FunSuite with Fixtures {
     assertEquals(decoded, OnOrOff2.Off())
   }
 
+  // It wasn't working without ExportedMagnolia trick (see https://github.com/propensive/magnolia/issues/107#issuecomment-589289260)
+  // The point is that it should use custom decoder defined in dhallj and not try to invoke magnolia derivation
+  test("Work if the top level type has custom encoder") {
+    val decoded =
+      """
+        |[
+        |  (<Error1 : {msg : Text} | Error2 : {code : Natural, code2 : Natural}>.Error1) {msg = "abc"},
+        |  (<Error1 : {msg : Text} | Error2 : {code : Natural, code2 : Natural}>.Error2) {code = 123, code2 = 456}
+        |]""".stripMargin.decode[List[Error]]
+
+    assertEquals(decoded, List(Error1("abc"), Error2(code = 123, code2 = 456)))
+  }
+
   test("Decoding error should be comprehensible for deeply nested case classes".ignore) {
     val input =
       """
