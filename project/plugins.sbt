@@ -1,3 +1,4 @@
-addSbtPlugin("com.softwaremill.sbt-softwaremill" % "sbt-softwaremill-common" % "1.9.15")
-addSbtPlugin("com.softwaremill.sbt-softwaremill" % "sbt-softwaremill-publish" % "1.9.15")
+val sbtSoftwareMillVer = "2.0.3"
+addSbtPlugin("com.softwaremill.sbt-softwaremill" % "sbt-softwaremill-common" % sbtSoftwareMillVer)
+addSbtPlugin("com.softwaremill.sbt-softwaremill" % "sbt-softwaremill-publish" % sbtSoftwareMillVer)
 addSbtPlugin("org.scalameta"     % "sbt-scalafmt" % "2.4.2")

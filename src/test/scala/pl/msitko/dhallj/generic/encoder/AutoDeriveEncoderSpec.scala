@@ -1,5 +1,6 @@
 package pl.msitko.dhallj.generic.encoder
 
+import org.dhallj.ast.{NaturalLiteral, RecordLiteral}
 import org.dhallj.codec.Encoder
 import org.dhallj.codec.syntax._
 import org.dhallj.core.Expr
@@ -43,6 +44,21 @@ class AutoDeriveEncoderSpec extends munit.FunSuite with Fixtures {
       """{errors = [(<Error1 : {msg : Text} | Error2 : {code : Natural, code2 : Natural}>.Error1) {msg = "abc"}, (<Error1 : {msg : Text} | Error2 : {code : Natural, code2 : Natural}>.Error2) {code = 123, code2 = 456}]}""")
   }
 
+  test("Do not invoke magnolia and use custom instance if one is provided manually") {
+    implicit val errorEncoder: Encoder[StatusCode] = new Encoder[StatusCode] {
+      override def encode(value: StatusCode, target: Option[Expr]): Expr =
+        RecordLiteral(Map("myStatusCode" -> NaturalLiteral(value.code).get))
+      override def dhallType(value: Option[StatusCode], target: Option[Expr]): Expr = ???
+    }
+
+    val res = encode(StatusCode(201))
+
+    assertEquals(
+      res,
+      """{myStatusCode = 201}"""
+    )
+  }
+
   test("Generate dhall type for sealed traits") {
     val typeExpr = dhallType[Error]
 
@@ -52,11 +68,9 @@ class AutoDeriveEncoderSpec extends munit.FunSuite with Fixtures {
     )
   }
 
+  // It wasn't working without ExportedMagnolia trick (see https://github.com/propensive/magnolia/issues/107#issuecomment-589289260)
+  // The point is that it should use custom decoder defined in dhallj and not try to invoke magnolia derivation
   test("Work if the top level type has custom encoder") {
-    // TODO: doesn't work without that import
-    import Encoder._
-
-    // BTW it wouldn't work if we don't `import org.dhallj.codec.Encoder._`
     val typeExpr = dhallType[List[Error]]
 
     assertEquals(
