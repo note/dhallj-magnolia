@@ -30,6 +30,14 @@ input.asExpr.toString
 // """{a = 12, b = "abc", bar = (<Bar1 : {a : Natural} | Bar2 : {b : Text}>.Bar2) {b = "abcd"}}"""
 ```
 
+Additionally, dhallj's `Encoder[A]` has `dhallType` method which prints out dhall type for `A`. So, in our case we can:
+
+```scala
+import org.dhallj.codec.Encoder
+println(Encoder[Foo].dhallType(None, None))
+// {a : Natural, b : Text, bar : <Bar1 : {a : Natural} | Bar2 : {b : Text}>}
+```
+
 ### Automatic Decoder derivation
 
 ```scala
