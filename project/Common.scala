@@ -1,13 +1,11 @@
 import com.softwaremill.Publish.ossPublishSettings
 import com.softwaremill.SbtSoftwareMillCommon.autoImport.commonSmlBuildSettings
-import com.typesafe.sbt.SbtPgp.autoImportImpl.PgpKeys
 import org.scalafmt.sbt.ScalafmtPlugin.autoImport.scalafmtOnCompile
 import sbt.Keys.{developers, name, organization, scalaVersion, testFrameworks, version}
 import sbt.{Project, TestFramework}
 import xerial.sbt.Sonatype.autoImport.{sonatypeProfileName, sonatypeProjectHosting}
 import sbt.Keys._
 import sbt._
-import sbtrelease.ReleasePlugin.autoImport.releasePublishArtifactsAction
 import xerial.sbt.Sonatype.GitHubHosting
 
 object Common {
@@ -18,7 +16,6 @@ object Common {
 
       scalaVersion := "2.13.5",
       scalafmtOnCompile := true,
-      releasePublishArtifactsAction := PgpKeys.publishSigned.value,
 
       commonSmlBuildSettings,
       testFrameworks += new TestFramework("munit.Framework"),

@@ -4,6 +4,5 @@ import Dependencies._
 lazy val root = (project in file("."))
   .commonSettings("dhallj-magnolia")
   .settings(
-    libraryDependencies ++= compileDeps(scalaVersion.value) ++ testDeps,
-    publishTravisSettings
+    libraryDependencies ++= compileDeps(scalaVersion.value) ++ testDeps
   )
