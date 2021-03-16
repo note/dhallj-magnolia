@@ -5,7 +5,7 @@ This library provides generic derivation of [dhallj](https://github.com/travisbr
 To use dhallj-magnolia add the following dependency to your `build.sbt`:
 
 ```
-libraryDependencies += "pl.msitko" %% "dhallj-magnolia" % "0.1.3-M7"
+libraryDependencies += "pl.msitko" %% "dhallj-magnolia" % "0.1.3-M8"
 ```
 
 ## Examples
