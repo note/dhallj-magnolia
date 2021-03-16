@@ -84,4 +84,3 @@ for {
 } yield decoded
 // Right(Foo(12,abc,Bar2(abcd)))
 ```
-
