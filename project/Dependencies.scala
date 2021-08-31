@@ -4,7 +4,7 @@ object Dependencies {
 	object Versions {
 		val Dhall = "0.8.0-M1"
 		val Magnolia = "0.17.0"
-		val Munit = "0.7.27"
+		val Munit = "0.7.29"
 	}
 
 	def magnolia(scalaVersion: String) 	= Seq(
