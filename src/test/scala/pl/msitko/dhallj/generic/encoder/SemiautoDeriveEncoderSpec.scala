@@ -99,10 +99,10 @@ class SemiautoDeriveEncoderSpec extends munit.FunSuite with Fixtures {
 
     // Another encoding would be preferred: <Off | On>.Off
     // However, it cannot be achieved with magnolia and current Encoder API
-    // While magnolia's `combine` has `CaseClass.isObject` which allows us to distinguish between case class and case object
-    // it's too late in the invocation chain - we would need that ability in `dispatch`. Alternatively, if Encoder
+    // While magnolia's `join` has `CaseClass.isObject` which allows us to distinguish between case class and case object
+    // it's too late in the invocation chain - we would need that ability in `split`. Alternatively, if Encoder
     // has the info if it's being applied on top level expression we could work around magnolia limitations by
-    // returning null for case objects if it appears in non top-level expression. That null could be handled in `dispatch` then
+    // returning null for case objects if it appears in non top-level expression. That null could be handled in `split` then
     assertEquals(res, "<Off : {} | On : {}>.Off {=}")
   }
 

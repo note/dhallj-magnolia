@@ -1,13 +1,13 @@
 package pl.msitko.dhallj.generic
 
-import magnolia.{CaseClass, SealedTrait}
+import magnolia1._
 import org.dhallj.ast._
 import org.dhallj.codec.Encoder
 import org.dhallj.core.Expr
 
 private[generic] object GenericEncoder {
 
-  private[generic] def combine[T](caseClass: CaseClass[Encoder, T]): Encoder[T] = new Encoder[T] {
+  private[generic] def join[T](caseClass: CaseClass[Encoder, T]): Encoder[T] = new Encoder[T] {
 
     override def encode(value: T, target: Option[Expr]): Expr =
       RecordLiteral(
@@ -24,7 +24,7 @@ private[generic] object GenericEncoder {
       )
   }
 
-  private[generic] def dispatch[T](sealedTrait: SealedTrait[Encoder, T]): Encoder[T] = new Encoder[T] {
+  private[generic] def split[T](sealedTrait: SealedTrait[Encoder, T]): Encoder[T] = new Encoder[T] {
 
     override def encode(value: T, target: Option[Expr]): Expr = {
       val subtype = sealedTrait.subtypes.find(_.cast.isDefinedAt(value)).get

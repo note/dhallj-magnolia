@@ -8,8 +8,8 @@ object Dependencies {
 	}
 
 	def magnolia(scalaVersion: String) 	= Seq(
-		"com.propensive" %% "magnolia" 			% Versions.Magnolia,
-		"org.scala-lang" % "scala-reflect" 	% scalaVersion % Provided
+		"com.softwaremill.magnolia1_2" %% "magnolia" 			% "1.1.3",
+		"org.scala-lang" 							% "scala-reflect" 	% scalaVersion % Provided
 	)
 
 	def compileDeps(scalaVersion: String) = Seq(

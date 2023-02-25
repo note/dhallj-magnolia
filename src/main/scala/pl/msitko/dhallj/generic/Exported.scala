@@ -5,7 +5,7 @@ package pl.msitko.dhallj.generic
 case class Exported[A](instance: A) extends AnyVal
 
 //import scala.language.higherKinds
-import magnolia.Magnolia
+import magnolia1._
 import scala.reflect.macros.whitebox
 
 object ExportedMagnolia {

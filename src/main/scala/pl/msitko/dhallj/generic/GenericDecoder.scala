@@ -4,7 +4,7 @@ import cats.Traverse
 import cats.implicits.catsSyntaxEitherId
 import cats.instances.either._
 import cats.instances.list._
-import magnolia.{CaseClass, SealedTrait}
+import magnolia1._
 import org.dhallj.ast._
 import org.dhallj.codec.Decoder.Result
 import org.dhallj.codec.{Decoder, DecodingFailure}
@@ -17,7 +17,7 @@ final case class MissingRecordField(override val target: String, missingFieldNam
 
 private[generic] object GenericDecoder {
 
-  private[generic] def combine[T](caseClass: CaseClass[Decoder, T]): Decoder[T] = new Decoder[T] {
+  private[generic] def join[T](caseClass: CaseClass[Decoder, T]): Decoder[T] = new Decoder[T] {
 
     private def decodeAs(expr: Expr, recordMap: Map[String, Expr]) =
       Traverse[List]
@@ -58,7 +58,7 @@ private[generic] object GenericDecoder {
     override def isExactType(typeExpr: Expr): Boolean = false
   }
 
-  private[generic] def dispatch[T](sealedTrait: SealedTrait[Decoder, T]): Decoder[T] = new Decoder[T] {
+  private[generic] def split[T](sealedTrait: SealedTrait[Decoder, T]): Decoder[T] = new Decoder[T] {
 
     private def decodeAs(expr: Expr, subtypeName: String) =
       sealedTrait.subtypes.find(_.typeName.short == subtypeName) match {
