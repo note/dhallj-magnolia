@@ -72,7 +72,7 @@ class SemiautoDeriveEncoderSpec extends munit.FunSuite with Fixtures {
 
     assertEquals(
       res,
-      """{errors = [(<Error1 : {msg : Text} | Error2 : {code : Natural, code2 : Natural}>.Error1) {msg = "abc"}, (<Error1 : {msg : Text} | Error2 : {code : Natural, code2 : Natural}>.Error2) {code = 123, code2 = 456}]}""")
+      """{errors = [<Error1 : {msg : Text} | Error2 : {code : Natural, code2 : Natural}>.Error1 {msg = "abc"}, <Error1 : {msg : Text} | Error2 : {code : Natural, code2 : Natural}>.Error2 {code = 123, code2 = 456}]}""")
   }
 
   test("Generate dhall type for sealed traits") {
@@ -103,13 +103,13 @@ class SemiautoDeriveEncoderSpec extends munit.FunSuite with Fixtures {
     // it's too late in the invocation chain - we would need that ability in `dispatch`. Alternatively, if Encoder
     // has the info if it's being applied on top level expression we could work around magnolia limitations by
     // returning null for case objects if it appears in non top-level expression. That null could be handled in `dispatch` then
-    assertEquals(res, "(<Off : {} | On : {}>.Off) {=}")
+    assertEquals(res, "<Off : {} | On : {}>.Off {=}")
   }
 
   test("Encode case object within deeply nested hierarchy") {
     val res = encode(Akka(Http(Server(Preview(OnOrOff.Off)))))
 
-    assertEquals(res, """{http = {server = {preview = {enableHttp2 = (<Off : {} | On : {}>.Off) {=}}}}}""")
+    assertEquals(res, """{http = {server = {preview = {enableHttp2 = <Off : {} | On : {}>.Off {=}}}}}""")
   }
 
   test("Encode parameterless case class") {
