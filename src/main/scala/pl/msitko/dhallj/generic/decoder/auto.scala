@@ -1,17 +1,17 @@
 package pl.msitko.dhallj.generic.decoder
 
-import magnolia.{CaseClass, SealedTrait}
+import magnolia1._
 import org.dhallj.codec.Decoder
 import pl.msitko.dhallj.generic.{Exported, ExportedMagnolia, GenericDecoder}
 
 object auto extends ExportedDecoder {
   type Typeclass[T] = Decoder[T]
 
-  def combine[T](caseClass: CaseClass[Typeclass, T]): Typeclass[T] =
-    GenericDecoder.combine(caseClass)
+  def join[T](caseClass: CaseClass[Typeclass, T]): Typeclass[T] =
+    GenericDecoder.join(caseClass)
 
-  def dispatch[T](sealedTrait: SealedTrait[Typeclass, T]): Typeclass[T] =
-    GenericDecoder.dispatch(sealedTrait)
+  def split[T](sealedTrait: SealedTrait[Typeclass, T]): Typeclass[T] =
+    GenericDecoder.split(sealedTrait)
 
   implicit def deriveDecoder[T]: Exported[Decoder[T]] = macro ExportedMagnolia.exportedMagnolia[Decoder, T]
 

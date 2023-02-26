@@ -5,7 +5,7 @@ This library provides generic derivation of [dhallj](https://github.com/travisbr
 To use dhallj-magnolia add the following dependency to your `build.sbt`:
 
 ```
-libraryDependencies += "pl.msitko" %% "dhallj-magnolia" % "0.1.3-M3"
+libraryDependencies += "pl.msitko" %% "dhallj-magnolia" % "0.1.3-M9"
 ```
 
 ## Examples
@@ -30,7 +30,7 @@ input.asExpr.toString
 // """{a = 12, b = "abc", bar = (<Bar1 : {a : Natural} | Bar2 : {b : Text}>.Bar2) {b = "abcd"}}"""
 ```
 
-Additionally, dhallj's `Encoder[A]` has `dhallType` method which prints out dhall type for `A`. So, in our case we can:
+Additionally, dhallj's `Encoder[A]` has `dhallType` method which prints out dhall type for `A`. So, following the example, we can:
 
 ```scala
 import org.dhallj.codec.Encoder

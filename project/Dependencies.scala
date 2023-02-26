@@ -2,16 +2,15 @@ import sbt._
 
 object Dependencies {
 	object Versions {
-		val Dhall = "0.8.0-M1"
+		val Dhall = "0.10.0-M1"
 		val Magnolia = "0.17.0"
-		val Munit = "0.7.22"
+		val Munit = "0.7.27"
 	}
 
-  object Versions {
-    val Dhall    = "0.8.0-M1"
-    val Magnolia = "0.17.0"
-    val Munit    = "0.7.20"
-  }
+	def magnolia(scalaVersion: String) 	= Seq(
+		"com.softwaremill.magnolia1_2" %% "magnolia" 			% "1.1.3",
+		"org.scala-lang" 							% "scala-reflect" 	% scalaVersion % Provided
+	)
 
   def magnolia(scalaVersion: String) = Seq(
     "com.propensive" %% "magnolia"     % Versions.Magnolia,

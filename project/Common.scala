@@ -1,5 +1,5 @@
+import com.softwaremill.SbtSoftwareMillCommon.commonSmlBuildSettings
 import com.softwaremill.Publish.ossPublishSettings
-import com.softwaremill.SbtSoftwareMillCommon.autoImport.commonSmlBuildSettings
 import org.scalafmt.sbt.ScalafmtPlugin.autoImport.scalafmtOnCompile
 import sbt.Keys.{developers, name, organization, scalaVersion, testFrameworks, version}
 import sbt.{Project, TestFramework}
@@ -16,7 +16,7 @@ object Common {
       name := nameArg,
       organization := "pl.msitko",
 
-      scalaVersion := "2.13.5",
+      scalaVersion := "2.13.10",
       scalafmtOnCompile := true,
 
       commonSmlBuildSettings,
