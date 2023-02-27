@@ -8,6 +8,13 @@ To use dhallj-magnolia add the following dependency to your `build.sbt`:
 libraryDependencies += "pl.msitko" %% "dhallj-magnolia" % "0.1.3-M9"
 ```
 
+## Limitations of Scala 3 version of the library
+
+Dhallj-magnolia is published for both Scala 2.13 and Scala 3. Limitations of Scala 3 branch of the library:
+
+ * Your project consuming dhallj-magnolia has to have the compilation flag `-Yretain-trees` enabled if you rely on default values for case classes
+ * Derivation doesn't work for value classes
+
 ## Examples
 
 Consider the following ADT:
