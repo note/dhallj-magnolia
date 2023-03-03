@@ -3,7 +3,16 @@ import Common._
 val scala2Version = "2.13.10"
 val scala3Version = "3.2.2"
 
-lazy val root = (projectMatrix in file("modules/dhallj-magnolia"))
+lazy val root =
+  project
+    .in(file("."))
+    .settings(commonSettings("dhallj-magnolia-root"))
+    .settings(publishArtifact := false)
+    .aggregate(
+      (dhalljMagnolia.projectRefs): _*
+    )
+
+lazy val dhalljMagnolia = (projectMatrix in file("modules/dhallj-magnolia"))
   .settings(commonSettings("dhallj-magnolia"))
   .settings(
     libraryDependencies ++= Seq(
