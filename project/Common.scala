@@ -3,7 +3,7 @@ import com.softwaremill.Publish.ossPublishSettings
 import org.scalafmt.sbt.ScalafmtPlugin.autoImport.scalafmtOnCompile
 import sbt.Keys.{developers, name, organization, testFrameworks}
 import sbt.{Project, TestFramework}
-import xerial.sbt.Sonatype.autoImport.{sonatypeProfileName, sonatypeProjectHosting}
+import xerial.sbt.Sonatype.autoImport.{sonatypeCredentialHost, sonatypeProfileName, sonatypeProjectHosting}
 import sbt.Keys._
 import sbt._
 import xerial.sbt.Sonatype.GitHubHosting
@@ -23,6 +23,7 @@ object Common {
     sonatypeProjectHosting := Some(
       GitHubHosting("note", name.value, "pierwszy1@gmail.com")
     ),
+    sonatypeCredentialHost := "oss.sonatype.org",
     licenses := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
     developers := List(
       Developer(
