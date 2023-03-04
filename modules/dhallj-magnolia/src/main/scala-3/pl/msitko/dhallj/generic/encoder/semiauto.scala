@@ -2,10 +2,12 @@ package pl.msitko.dhallj.generic.encoder
 
 import magnolia1.{CaseClass, Derivation, SealedTrait}
 import org.dhallj.ast.{Application, FieldAccess, RecordLiteral, RecordType, UnionType}
+import org.dhallj.codec.Decoder.Result
 import org.dhallj.codec.Encoder
 import org.dhallj.core.Expr
 
 import scala.deriving.Mirror
+import scala.jdk.CollectionConverters._
 
 object semiauto:
 

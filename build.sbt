@@ -16,9 +16,9 @@ lazy val dhalljMagnolia = (projectMatrix in file("modules/dhallj-magnolia"))
   .settings(commonSettings("dhallj-magnolia"))
   .settings(
     libraryDependencies ++= Seq(
-      "org.dhallj"    %% "dhall-scala-codec" % "0.10.0-M2",
-      "org.scalameta" %% "munit"             % "0.7.27"    % Test,
-      "org.dhallj"    %% "dhall-javagen"     % "0.10.0-M2" % Test
+      "org.dhallj"                    %% "dhall-scala-codec"  % "0.10.0-M2",
+      "org.scalameta"                 %% "munit"              % "0.7.27"    % Test,
+      "org.dhallj"                    %% "dhall-javagen"      % "0.10.0-M2" % Test
     ),
     libraryDependencies ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
@@ -26,8 +26,8 @@ lazy val dhalljMagnolia = (projectMatrix in file("modules/dhallj-magnolia"))
           Seq("com.softwaremill.magnolia1_3" %% "magnolia" % "1.2.7")
         case _ =>
           Seq(
-            "com.softwaremill.magnolia1_2" %% "magnolia"      % "1.1.3",
-            "org.scala-lang"                % "scala-reflect" % scala2Version % Provided,
+            "com.softwaremill.magnolia1_2"      %% "magnolia" % "1.1.3",
+            "org.scala-lang" % "scala-reflect"  % scala2Version % Provided,
           )
       }
     },
@@ -41,3 +41,12 @@ lazy val dhalljMagnolia = (projectMatrix in file("modules/dhallj-magnolia"))
     }
   )
   .jvmPlatform(scalaVersions = Seq(scala2Version, scala3Version))
+
+lazy val benchmark = (projectMatrix in file("modules/benchmark"))
+  .settings(commonSettings("benchmark"))
+  .settings(
+    scalaVersion := scala3Version
+  )
+  .enablePlugins(JmhPlugin)
+  .dependsOn(dhalljMagnolia)
+  .jvmPlatform(scalaVersions = Seq(scala3Version))
