@@ -1,6 +1,6 @@
 # dhallj-magnolia
 
-This library provides generic derivation of [dhallj](https://github.com/travisbrown/dhallj) `Encoder` and `Decoder` typeclasses using [magnolia](https://github.com/propensive/magnolia).
+This library provides generic derivation of [dhallj](https://github.com/travisbrown/dhallj) `Encoder` and `Decoder` typeclasses using [magnolia](https://github.com/softwaremill/magnolia).
 
 To use dhallj-magnolia add the following dependency to your `build.sbt`:
 
