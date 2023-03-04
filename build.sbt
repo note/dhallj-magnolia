@@ -9,25 +9,25 @@ lazy val root =
     .settings(commonSettings("dhallj-magnolia-root"))
     .settings(publishArtifact := false)
     .aggregate(
-      (dhalljMagnolia.projectRefs): _*
+      dhalljMagnolia.projectRefs: _*
     )
 
 lazy val dhalljMagnolia = (projectMatrix in file("modules/dhallj-magnolia"))
   .settings(commonSettings("dhallj-magnolia"))
   .settings(
     libraryDependencies ++= Seq(
-      "org.dhallj"                    %% "dhall-scala-codec"  % "0.10.0-M2",
-      "org.scalameta" %% "munit" % "0.7.27" % Test,
-      "org.dhallj" %% "dhall-javagen" % "0.10.0-M2" % Test
+      "org.dhallj"    %% "dhall-scala-codec" % "0.10.0-M2",
+      "org.scalameta" %% "munit"             % "0.7.27"    % Test,
+      "org.dhallj"    %% "dhall-javagen"     % "0.10.0-M2" % Test
     ),
     libraryDependencies ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) =>
-          Seq("com.softwaremill.magnolia1_3"  %% "magnolia"           % "1.2.7")
+          Seq("com.softwaremill.magnolia1_3" %% "magnolia" % "1.2.7")
         case _ =>
           Seq(
-            "com.softwaremill.magnolia1_2" %% "magnolia" % "1.1.3",
-            "org.scala-lang" % "scala-reflect" % scala2Version % Provided,
+            "com.softwaremill.magnolia1_2" %% "magnolia"      % "1.1.3",
+            "org.scala-lang"                % "scala-reflect" % scala2Version % Provided,
           )
       }
     },

@@ -9,22 +9,21 @@ import sbt._
 import xerial.sbt.Sonatype.GitHubHosting
 
 object Common {
+
   def commonSettings(nameArg: String): Seq[Def.Setting[_]] = commonSmlBuildSettings ++ Seq(
-    name := nameArg,
-    organization := "pl.msitko",
-
+    name              := nameArg,
+    organization      := "pl.msitko",
     scalafmtOnCompile := true,
-
     testFrameworks += new TestFramework("munit.Framework"),
   ) ++ ossPublishSettings ++ Seq(
-    sonatypeProfileName := "pl.msitko",
+    sonatypeProfileName  := "pl.msitko",
     organizationHomepage := Some(url("https://github.com/note")),
-    homepage := Some(url("https://github.com/note/dhallj-magnolia")),
+    homepage             := Some(url("https://github.com/note/dhallj-magnolia")),
     sonatypeProjectHosting := Some(
       GitHubHosting("note", name.value, "pierwszy1@gmail.com")
     ),
     sonatypeCredentialHost := "oss.sonatype.org",
-    licenses := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
+    licenses               := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
     developers := List(
       Developer(
         id = "note",
