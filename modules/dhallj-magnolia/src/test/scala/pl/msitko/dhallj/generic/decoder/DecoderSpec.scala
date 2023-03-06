@@ -29,7 +29,8 @@ trait DecoderSpec { self: munit.FunSuite with Fixtures =>
         |  },
         |  api1 = {
         |    endpoint = {
-        |      host = "some.host"
+        |      host = "some.host",
+        |      ignoreThisField = "anything"
         |    }
         |  },
         |  api2 = {
