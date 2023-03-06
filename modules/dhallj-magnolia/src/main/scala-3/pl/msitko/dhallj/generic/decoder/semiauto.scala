@@ -7,12 +7,8 @@ import org.dhallj.ast.*
 import org.dhallj.codec.{Decoder, DecodingFailure, Encoder}
 import org.dhallj.codec.Decoder.Result
 import org.dhallj.core.Expr
-import pl.msitko.dhallj.generic.Extractors
+import pl.msitko.dhallj.generic.{Extractors, MissingRecordField}
 import scala.deriving.Mirror
-
-final case class MissingRecordField(override val target: String, missingFieldName: String, override val value: Expr)
-    extends DecodingFailure(target, value):
-  override def toString: String = s"Missing record field '$missingFieldName' when decoding $target"
 
 object semiauto:
 

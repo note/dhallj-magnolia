@@ -3,6 +3,7 @@ package pl.msitko.dhallj.generic.decoder
 import org.dhallj.codec.{Decoder, Encoder}
 import org.dhallj.codec.syntax._
 import org.dhallj.syntax._
+import pl.msitko.dhallj.generic.MissingRecordField
 import pl.msitko.dhallj.generic.example.akka.OnOrOff.Off
 import pl.msitko.dhallj.generic.example.akka.{Akka, Http, OnOrOff, OnOrOff2, Preview, Server}
 import pl.msitko.dhallj.generic.example.{AppConfig, DbConfig, Error, Error1, Error2, Errors, Fixtures, StatusCode}
@@ -58,6 +59,19 @@ trait DecoderSpec { self: munit.FunSuite with Fixtures =>
         |""".stripMargin.decode[Errors]
 
     assertEquals(decoded, Errors(List(Error1("abc"), Error2(code = 123, code2 = 456))))
+  }
+
+  test("Return MissingRecordField") {
+    val in =
+      """
+        |let Error = < Error1 : { msg : Text } | Error2 : { code : Natural, code2 : Natural } >
+        |in { errors = [Error.Error1 { msg = "abc"}, Error.Error2 { code2 = 456 }] }
+        |""".stripMargin
+
+    val res = in.parseExpr.getOr("Parsing failed").normalize().as[Errors]
+
+    val Left(mrf: MissingRecordField) = res
+    assertEquals(mrf.missingFieldName, "code")
   }
 
   test("Load union with empty parameter list as case object") {
