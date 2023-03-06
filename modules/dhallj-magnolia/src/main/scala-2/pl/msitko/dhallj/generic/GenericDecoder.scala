@@ -4,6 +4,7 @@ import cats.Traverse
 import cats.implicits.catsSyntaxEitherId
 import cats.instances.either._
 import cats.instances.list._
+
 import magnolia1._
 import org.dhallj.ast._
 import org.dhallj.codec.Decoder.Result
@@ -39,7 +40,7 @@ private[generic] object GenericDecoder {
       case RecordLiteral(recordMap) =>
         decodeAs(expr, recordMap)
 
-      case FieldAccess(UnionType(_), _) =>
+      case FieldAccess(Extractors.IsUnionType(_), _) =>
         decodeAs(expr, Map.empty)
 
       case other =>
@@ -69,13 +70,22 @@ private[generic] object GenericDecoder {
       }
 
     override def decode(expr: Expr): Result[T] = expr match {
-      case Application(FieldAccess(UnionType(_), t), arg) =>
+      case Application(FieldAccess(Extractors.IsUnionType(_), t), arg) =>
         decodeAs(arg, t)
-      case FieldAccess(UnionType(_), t) =>
+      case FieldAccess(Extractors.IsUnionType(_), t) =>
         decodeAs(expr, t)
       case unexpected =>
         new DecodingFailure(s"${unexpected} is not a union", expr).asLeft
     }
+
+//    override def decode(expr: Expr): Result[T] = expr match {
+//      case Application(FieldAccess(UnionType(_), t), arg) =>
+//        decodeAs(arg, t)
+//      case FieldAccess(UnionType(_), t) =>
+//        decodeAs(expr, t)
+//      case unexpected =>
+//        new DecodingFailure(s"${unexpected} is not a union", expr).asLeft
+//    }
 
     override def isValidType(typeExpr: Expr): Boolean = true
 
