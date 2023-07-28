@@ -1,4 +1,4 @@
-val sbtSoftwareMillVer = "2.0.12"
+val sbtSoftwareMillVer = "2.0.13"
 addSbtPlugin("com.softwaremill.sbt-softwaremill" % "sbt-softwaremill-common"  % sbtSoftwareMillVer)
 addSbtPlugin("com.softwaremill.sbt-softwaremill" % "sbt-softwaremill-publish" % sbtSoftwareMillVer)
 addSbtPlugin("com.eed3si9n"                      % "sbt-projectmatrix"        % "0.9.0")
