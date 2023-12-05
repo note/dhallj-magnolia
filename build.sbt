@@ -17,7 +17,7 @@ lazy val dhalljMagnolia = (projectMatrix in file("modules/dhallj-magnolia"))
   .settings(
     libraryDependencies ++= Seq(
       "org.dhallj"                    %% "dhall-scala-codec"  % "0.10.0-M2",
-      "org.scalameta"                 %% "munit"              % "0.7.27"    % Test,
+      "org.scalameta"                 %% "munit"              % "0.7.29"    % Test,
       "org.dhallj"                    %% "dhall-javagen"      % "0.10.0-M2" % Test
     ),
     libraryDependencies ++= {

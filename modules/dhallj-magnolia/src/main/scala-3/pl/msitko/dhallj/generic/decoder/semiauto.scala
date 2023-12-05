@@ -7,7 +7,6 @@ import org.dhallj.ast.*
 import org.dhallj.codec.{Decoder, DecodingFailure, Encoder}
 import org.dhallj.codec.Decoder.Result
 import org.dhallj.core.Expr
-import pl.msitko.dhallj.generic.{Extractors, MissingRecordField}
 import scala.deriving.Mirror
 
 object semiauto:
@@ -17,20 +16,18 @@ object semiauto:
       override type Typeclass[T] = Decoder[T]
 
       override def split[T](sealedTrait: SealedTrait[Decoder, T]): Decoder[T] =
-        val typeClassByShortName = sealedTrait.subtypes.map(s => s.typeInfo.short -> s.typeclass).toMap
-
         new Decoder[T]:
           private def decodeAs(expr: Expr, subtypeName: String) =
-            typeClassByShortName.get(subtypeName) match
-              case Some(typeclass) =>
-                typeclass.decode(expr)
+            sealedTrait.subtypes.find(_.typeInfo.short == subtypeName) match
+              case Some(subtype) =>
+                subtype.typeclass.decode(expr)
               case None =>
                 DecodingFailure(s"$subtypeName is not a known subtype of ${sealedTrait.typeInfo.full}", expr).asLeft
 
           override def decode(expr: Expr): Result[T] = expr match
-            case Application(FieldAccess(Extractors.IsUnionType(_), t), arg) =>
+            case Application(FieldAccess(UnionType(_), t), arg) =>
               decodeAs(arg, t)
-            case FieldAccess(Extractors.IsUnionType(_), t) =>
+            case FieldAccess(UnionType(_), t) =>
               decodeAs(expr, t)
             case unexpected =>
               DecodingFailure(s"${unexpected} is not a union", expr).asLeft
@@ -38,7 +35,6 @@ object semiauto:
           override def isValidType(typeExpr: Expr): Boolean = true
 
           override def isExactType(typeExpr: Expr): Boolean = false
-      end split
 
       override def join[T](caseClass: CaseClass[Decoder, T]): Decoder[T] =
         new Decoder[T]:
@@ -59,7 +55,7 @@ object semiauto:
           override def decode(expr: Expr): Result[T] = expr match
             case RecordLiteral(recordMap) =>
               decodeAs(expr, recordMap)
-            case FieldAccess(Extractors.IsUnionType(_), _) =>
+            case FieldAccess(UnionType(_), _) =>
               decodeAs(expr, Map.empty)
             case other =>
               Left(DecodingFailure(caseClass.typeInfo.full, other))
@@ -73,7 +69,6 @@ object semiauto:
               false
 
           override def isExactType(typeExpr: Expr): Boolean = false
-      end join
 
     derivation.derived
   end deriveDecoder

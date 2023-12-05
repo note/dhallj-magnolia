@@ -3,7 +3,6 @@ package pl.msitko.dhallj.generic.decoder
 import org.dhallj.codec.{Decoder, Encoder}
 import org.dhallj.codec.syntax._
 import org.dhallj.syntax._
-import pl.msitko.dhallj.generic.MissingRecordField
 import pl.msitko.dhallj.generic.example.akka.OnOrOff.Off
 import pl.msitko.dhallj.generic.example.akka.{Akka, Http, OnOrOff, OnOrOff2, Preview, Server}
 import pl.msitko.dhallj.generic.example.{AppConfig, DbConfig, Error, Error1, Error2, Errors, Fixtures, StatusCode}

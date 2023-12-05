@@ -4,17 +4,12 @@ import cats.Traverse
 import cats.implicits.catsSyntaxEitherId
 import cats.instances.either._
 import cats.instances.list._
-
 import magnolia1._
 import org.dhallj.ast._
 import org.dhallj.codec.Decoder.Result
 import org.dhallj.codec.{Decoder, DecodingFailure}
 import org.dhallj.core.Expr
-
-final case class MissingRecordField(override val target: String, missingFieldName: String, override val value: Expr)
-    extends DecodingFailure(target, value) {
-  override def toString: String = s"Missing record field '$missingFieldName' when decoding $target"
-}
+import pl.msitko.dhallj.generic.decoder.MissingRecordField
 
 private[generic] object GenericDecoder {
 
@@ -40,7 +35,7 @@ private[generic] object GenericDecoder {
       case RecordLiteral(recordMap) =>
         decodeAs(expr, recordMap)
 
-      case FieldAccess(Extractors.IsUnionType(_), _) =>
+      case FieldAccess(UnionType(_), _) =>
         decodeAs(expr, Map.empty)
 
       case other =>
@@ -70,22 +65,13 @@ private[generic] object GenericDecoder {
       }
 
     override def decode(expr: Expr): Result[T] = expr match {
-      case Application(FieldAccess(Extractors.IsUnionType(_), t), arg) =>
+      case Application(FieldAccess(UnionType(_), t), arg) =>
         decodeAs(arg, t)
-      case FieldAccess(Extractors.IsUnionType(_), t) =>
+      case FieldAccess(UnionType(_), t) =>
         decodeAs(expr, t)
       case unexpected =>
         new DecodingFailure(s"${unexpected} is not a union", expr).asLeft
     }
-
-//    override def decode(expr: Expr): Result[T] = expr match {
-//      case Application(FieldAccess(UnionType(_), t), arg) =>
-//        decodeAs(arg, t)
-//      case FieldAccess(UnionType(_), t) =>
-//        decodeAs(expr, t)
-//      case unexpected =>
-//        new DecodingFailure(s"${unexpected} is not a union", expr).asLeft
-//    }
 
     override def isValidType(typeExpr: Expr): Boolean = true
 
